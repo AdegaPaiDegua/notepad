@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notepad Adega - Controle de Bebidas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #111;
+            padding: 20px;
+            color: #eee;
+            background-image: linear-gradient(to bottom, #000000, #222);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #222;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffffff;
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(149, 149, 148, 0.3);
+        }
+        
+        .description {
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        .form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #ddd;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #333;
+            color: #fff;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ffffff;
+            box-shadow: 0 0 5px rgba(166, 166, 166, 0.5);
+        }
+        
+        button {
+            background-color: #000;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #ffffff;
+            color: #000;
+            box-shadow: 0 0 10px rgba(181, 181, 181, 0.5);
+        }
+        
+        .notes-section {
+            margin-bottom: 30px;
+        }
+        
+        #notesList {
+            border: 1px solid #444;
+            border-radius: 5px;
+            min-height: 200px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #2a2a2a;
+        }
+        
+        .note-item {
+            padding: 12px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .note-item:hover {
+            background-color: #333;
+        }
+        
+        .note-item:last-child {
+            border-bottom: none;
+        }
+        
+        .note-info {
+            flex: 1;
+        }
+        
+        .note-client {
+            font-weight: bold;
+            color: #ffffff;
+        }
+        
+        .note-product {
+            color: #fff;
+        }
+        
+        .note-details {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .note-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .delete-btn {
+            background-color: #500;
+            color: #ff6666;
+            border: 1px solid #ff6666;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background-color: #ff6666;
+            color: #000;
+        }
+        
+        .summary-section {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid #444;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #555;
+        }
+        
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #444;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #666;
+            padding: 30px;
+            font-style: italic;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .secondary-btn {
+            background-color: #222;
+            color: #ccc;
+            border: 1px solid #666;
+        }
+        
+        .secondary-btn:hover {
+            background-color: #666;
+            color: #fff;
+            border-color: #ccc;
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .section-title {
+            color: #ffffff;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .client-total {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .import-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+        
+        .file-input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            align-items: center;
+        }
+        
+        .file-input-label {
+            padding: 10px 15px;
+            background-color: #333;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-input-label:hover {
+            background-color: #ffffff;
+            color: #000;
+        }
+        
+        #file-name {
+            color: #aaa;
+            font-style: italic;
+        }
+        
+        #importButton {
+            margin-top: 15px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Notepad Adega</h1>
+            <p class="description">Controle o consumo de bebidas dos clientes e calcule o valor a ser cobrado</p>
+        </header>
+        
+        <div class="form-section">
+            <div>
+                <div class="form-group">
+                    <label for="clientName">Nome do Cliente:</label>
+                    <input type="text" id="clientName" placeholder="Digite o nome do cliente">
+                </div>
+                
+                <div class="form-group">
+                    <label for="beverage">Bebida/Produto:</label>
+                    <input type="text" id="beverage" placeholder="Digite o nome da bebida ou produto">
+                </div>
+            </div>
+            
+            <div>
+                <div class="form-group">
+                    <label for="quantity">Quantidade:</label>
+                    <input type="number" id="quantity" min="1" value="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Preço Unitário (R$):</label>
+                    <input type="number" id="price" step="0.01" min="0" placeholder="0.00">
+                </div>
+            </div>
+        </div>
+        
+        <button id="addButton" style="width: 100%;">Adicionar à Lista</button>
+        
+        <div class="notes-section">
+            <h2 class="section-title">Consumo</h2>
+            <div id="notesList">
+                <div class="empty-message">Nenhum item adicionado ainda. Adicione itens acima.</div>
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <h2 class="section-title">Resumo para Cobrança</h2>
+            <div id="summary"></div>
+            <div class="total" id="totalAmount">Total: R$ 0,00</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="saveButton" style="flex: 1;">Salvar Registro</button>
+            <button id="clearButton" class="secondary-btn" style="flex: 1;">Limpar Tudo</button>
+        </div>
+        
+        <div class="import-section">
+            <h2 class="section-title">Importar Registro</h2>
+            <p>Selecione um arquivo JSON previamente salvo para importar os dados:</p>
+            
+            <div class="file-input-container">
+                <label for="importFile" class="file-input-label">Selecionar Arquivo</label>
+                <input type="file" id="importFile" accept=".json" class="hidden">
+                <span id="file-name">Nenhum arquivo selecionado</span>
+            </div>
+            
+            <button id="importButton" style="width: 100%;">Importar Dados</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const clientNameInput = document.getElementById('clientName');
+            const beverageInput = document.getElementById('beverage');
+            const quantityInput = document.getElementById('quantity');
+            const priceInput = document.getElementById('price');
+            const addButton = document.getElementById('addButton');
+            const notesList = document.getElementById('notesList');
+            const summaryElement = document.getElementById('summary');
+            const totalAmountElement = document.getElementById('totalAmount');
+            const saveButton = document.getElementById('saveButton');
+            const clearButton = document.getElementById('clearButton');
+            const importFileInput = document.getElementById('importFile');
+            const importButton = document.getElementById('importButton');
+            const fileNameSpan = document.getElementById('file-name');
+            
+            let notes = [];
+            
+            // Atualizar nome do arquivo selecionado
+            importFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    fileNameSpan.textContent = this.files[0].name;
+                } else {
+                    fileNameSpan.textContent = 'Nenhum arquivo selecionado';
+                }
+            });
+            
+            // Adicionar item à lista
+            addButton.addEventListener('click', function() {
+                const clientName = clientNameInput.value.trim();
+                const beverage = beverageInput.value.trim();
+                const quantity = parseInt(quantityInput.value);
+                const price = parseFloat(priceInput.value);
+                
+                if (!clientName) {
+                    alert('Por favor, informe o nome do cliente.');
+                    return;
+                }
+                
+                if (!beverage) {
+                    alert('Por favor, informe a bebida ou produto.');
+                    return;
+                }
+                
+                if (isNaN(quantity) || quantity <= 0) {
+                    alert('Por favor, informe uma quantidade válida.');
+                    return;
+                }
+                
+                if (isNaN(price) || price <= 0) {
+                    alert('Por favor, informe um preço válido.');
+                    return;
+                }
+                
+                const total = quantity * price;
+                const note = {
+                    clientName,
+                    beverage,
+                    quantity,
+                    price,
+                    total,
+                    timestamp: new Date().toLocaleString('pt-BR')
+                };
+                
+                notes.push(note);
+                updateNotesList();
+                updateSummary();
+                
+                // Limpar campos
+                beverageInput.value = '';
+                quantityInput.value = '1';
+                priceInput.value = '';
+                beverageInput.focus();
+            });
+            
+            // Atualizar a lista de notas
+            function updateNotesList() {
+                if (notes.length === 0) {
+                    notesList.innerHTML = '<div class="empty-message">Nenhum item adicionado ainda. Adicione itens acima.</div>';
+                    return;
+                }
+                
+                notesList.innerHTML = '';
+                notes.forEach((note, index) => {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'note-item';
+                    noteElement.innerHTML = `
+                        <div class="note-info">
+                            <div class="note-client">${note.clientName}</div>
+                            <div class="note-product">${note.quantity}x ${note.beverage}</div>
+                            <div class="note-details">
+                                R$ ${note.price.toFixed(2)} cada - Total: R$ ${note.total.toFixed(2)}
+                                <span class="timestamp">${note.timestamp}</span>
+                            </div>
+                        </div>
+                        <div class="note-actions">
+                            <button class="delete-btn" data-index="${index}">Excluir</button>
+                        </div>
+                    `;
+                    notesList.appendChild(noteElement);
+                });
+                
+                // Adicionar event listeners aos botões de exclusão
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        notes.splice(index, 1);
+                        updateNotesList();
+                        updateSummary();
+                    });
+                });
+            }
+            
+            // Atualizar o resumo e total
+            function updateSummary() {
+                if (notes.length === 0) {
+                    summaryElement.innerHTML = '';
+                    totalAmountElement.textContent = 'Total: R$ 0,00';
+                    return;
+                }
+                
+                // Agrupar por cliente
+                const clients = {};
+                notes.forEach(note => {
+                    if (!clients[note.clientName]) {
+                        clients[note.clientName] = {
+                            total: 0,
+                            items: []
+                        };
+                    }
+                    clients[note.clientName].total += note.total;
+                    clients[note.clientName].items.push(note);
+                });
+                
+                summaryElement.innerHTML = '';
+                let grandTotal = 0;
+                
+                for (const clientName in clients) {
+                    const client = clients[clientName];
+                    grandTotal += client.total;
+                    
+                    const clientElement = document.createElement('div');
+                    clientElement.innerHTML = `
+                        <div class="summary-item">
+                            <span><strong>${clientName}</strong></span>
+                            <span class="client-total">R$ ${client.total.toFixed(2)}</span>
+                        </div>
+                    `;
+                    summaryElement.appendChild(clientElement);
+                }
+                
+                totalAmountElement.textContent = `Total: R$ ${grandTotal.toFixed(2)}`;
+            }
+            
+            // Salvar registro
+            saveButton.addEventListener('click', function() {
+                if (notes.length === 0) {
+                    alert('Não há itens para salvar.');
+                    return;
+                }
+                
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notes, null, 2));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "registro_adega.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+                
+                alert('Registro salvo com sucesso!');
+            });
+            
+            // Importar dados
+            importButton.addEventListener('click', function() {
+                if (!importFileInput.files.length) {
+                    alert('Por favor, selecione um arquivo para importar.');
+                    return;
+                }
+                
+                const file = importFileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        // Validar os dados importados
+                        if (!Array.isArray(importedData)) {
+                            throw new Error("Formato de arquivo inválido");
+                        }
+                        
+                        // Verificar se há dados atuais e perguntar se quer substituir ou adicionar
+                        if (notes.length > 0) {
+                            if (!confirm('Deseja substituir os dados atuais pelos importados? Clique em "Cancelar" para adicionar os dados importados aos atuais.')) {
+                                // Adicionar aos dados existentes
+                                notes = notes.concat(importedData);
+                            } else {
+                                // Substituir dados existentes
+                                notes = importedData;
+                            }
+                        } else {
+                            notes = importedData;
+                        }
+                        
+                        updateNotesList();
+                        updateSummary();
+                        
+                        // Limpar seleção de arquivo
+                        importFileInput.value = '';
+                        fileNameSpan.textContent = 'Nenhum arquivo selecionado';
+                        
+                        alert(`Dados importados com sucesso! ${importedData.length} itens carregados.`);
+                    } catch (error) {
+                        alert('Erro ao importar o arquivo. Certifique-se de que é um arquivo JSON válido exportado por este sistema.');
+                        console.error(error);
+                    }
+                };
+                
+                reader.onerror = function() {
+                    alert('Erro ao ler o arquivo. Tente novamente.');
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            // Limpar tudo
+            clearButton.addEventListener('click', function() {
+                if (confirm('Tem certeza que deseja limpar todos os dados?')) {
+                    notes = [];
+                    clientNameInput.value = '';
+                    beverageInput.value = '';
+                    quantityInput.value = '1';
+                    priceInput.value = '';
+                    updateNotesList();
+                    updateSummary();
+                    clientNameInput.focus();
+                }
+            });
+            
+            // Focar no campo do nome do cliente ao carregar a página
+            clientNameInput.focus();
+        });
+    </script>
+</body>
+</html>
